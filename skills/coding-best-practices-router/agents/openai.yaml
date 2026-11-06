@@ -1,0 +1,4 @@
+interface:
+  display_name: "Coding Best Practices Router"
+  short_description: "Route work to the right coding standards"
+  default_prompt: "Use $coding-best-practices-router to select the smallest useful skill set for this coding task."

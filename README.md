@@ -2,6 +2,10 @@
 
 Provider-neutral agent skills for writing, reviewing, and maintaining code and infrastructure.
 
+<!-- PROJECT SHIELDS -->
+[![Skills][skills-badge]][skills-url]
+
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -18,11 +22,17 @@ Provider-neutral agent skills for writing, reviewing, and maintaining code and i
 
 ## Included skills
 
+- `coding-best-practices-router`
 - `python-best-practices`
 - `powershell-best-practices`
 - `terraform-best-practices`
 
 Each skill is maintained once under `skills/`. Product-specific manifests expose those same canonical skill directories rather than maintaining copies.
+
+The router handles ambiguous, repository-wide, and mixed-technology requests.
+It selects the smallest useful set of specialized skills from project evidence,
+then loads those skills before acting. Requests that clearly target one
+technology can use its specialized skill directly.
 
 ## Codex CLI and ChatGPT desktop app
 
@@ -58,3 +68,8 @@ Agents that support the Agent Skills layout can install individual directories f
 ## Contributing
 
 Keep each skill focused and provider-neutral. Put detailed, conditional guidance in `references/`, link it from `SKILL.md`, and validate changed skills before publishing a new package version.
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[skills-badge]: https://img.shields.io/github/directory-file-count/JSChronicles/coding-best-practices/skills?type=dir&label=skills&color=brightgreen
+[skills-url]: skills/
