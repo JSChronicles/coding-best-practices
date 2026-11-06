@@ -1,0 +1,20 @@
+{
+  "name": "coding-best-practices",
+  "interface": {
+    "displayName": "Coding Best Practices"
+  },
+  "plugins": [
+    {
+      "name": "coding-best-practices",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "coding-best-practices",
+  "owner": {
+    "name": "JSChronicles"
+  },
+  "plugins": [
+    {
+      "name": "coding-best-practices",
+      "source": "./",
+      "description": "Reusable best-practices skills for Python, PowerShell, Terraform, and future languages.",
+      "version": "0.1.0"
+    }
+  ]
+}
