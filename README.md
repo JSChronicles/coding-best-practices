@@ -1,6 +1,7 @@
 # Coding Best Practices
 
-Provider-neutral agent skills for writing, reviewing, and maintaining code and infrastructure.
+Provider-neutral agent skills for writing, reviewing, and maintaining code,
+infrastructure, and automation.
 
 <!-- PROJECT SHIELDS -->
 [![Skills][skills-badge]][skills-url]
@@ -22,14 +23,20 @@ Provider-neutral agent skills for writing, reviewing, and maintaining code and i
 
 ## Included skills
 
+- `agent-skill-authoring-best-practices`
 - `coding-best-practices-router`
+- `go-best-practices`
+- `github-actions-best-practices`
 - `python-best-practices`
 - `powershell-best-practices`
+- `pull-request-description-writer`
 - `terraform-best-practices`
+- `typescript-best-practices`
 
 Each skill is maintained once under `skills/`. Product-specific manifests expose those same canonical skill directories rather than maintaining copies.
 
-The router handles ambiguous, repository-wide, and mixed-technology requests.
+The router handles ambiguous, repository-wide, workflow, and mixed-technology
+requests.
 It selects the smallest useful set of specialized skills from project evidence,
 then loads those skills before acting. Requests that clearly target one
 technology can use its specialized skill directly.

@@ -1,77 +1,52 @@
 ---
 name: coding-best-practices-router
-description: Routes ambiguous, repository-wide, or mixed-technology coding requests to the smallest useful set of included best-practices skills. Use when deciding among Python, PowerShell, and Terraform guidance, when a request spans more than one of them, or when the user asks which coding-best-practices skill applies.
+description: Routes ambiguous, repository-wide, or mixed-technology coding requests to the smallest useful set of installed coding best-practices skills. Use when the target technology is unclear, work spans multiple supported technologies, or the user asks which catalog skill applies. Do not use when one specialized skill already clearly matches.
+metadata:
+  author: JSChronicles
+  version: "0.2.0"
 ---
 
 # Coding Best Practices Router
 
-Select and load the smallest useful set of skills from this plugin. Route the
-request; do not repeat the specialized skills' guidance here.
+Dispatch coding work to the smallest useful set of specialized skills in this
+plugin. Do not repeat their technical guidance in the router.
 
-## When to Route
+## Routing Workflow
 
-Use this router when the request:
+1. Honor the user's explicit technology, files, and requested scope.
+2. Read [technology-detection.md](references/technology-detection.md) only when
+   the target is ambiguous, repository-wide, or potentially mixed.
+3. Read [routing-table.md](references/routing-table.md) and select only skills
+   that exist in the installed catalog.
+4. For more than one selected skill, read
+   [skill-composition.md](references/skill-composition.md) to assign ownership
+   and avoid duplicated or conflicting guidance.
+5. Read every selected skill's `SKILL.md` before acting. Load its references
+   only when that skill says they are relevant.
+6. Announce the selected skill or skill set and the evidence for the route.
 
-- does not clearly identify one supported technology;
-- asks for a repository-wide or cross-language review;
-- spans Python, PowerShell, and/or Terraform; or
-- explicitly asks which coding-best-practices skill to use.
+When one specialized skill clearly matches, use it directly on later turns.
+Re-route only when the task pivots, expands to another technology, or changes
+to a different subproject.
 
-When the request already identifies exactly one supported technology and its
-specialized skill is available, use that skill directly. Re-route only when the
-task pivots or expands to another technology.
+## Boundaries
 
-## Routing Process
+- Do not infer technologies from vendored dependencies, generated output,
+  virtual environments, build artifacts, or fixtures unless the request
+  specifically targets them.
+- In a monorepo, route by the requested file or subproject instead of the
+  repository's dominant language.
+- Do not load multiple skills merely because their files coexist. The requested
+  work must cross their ownership boundaries.
+- Do not fabricate a route for an unsupported technology. Follow applicable
+  project instructions and general engineering practices, and state the catalog
+  gap only when useful.
+- Ask one focused question only when competing routes would materially change
+  the work and project evidence cannot resolve them.
 
-1. Prefer the user's explicit target, named technology, and referenced files.
-2. If the target is ambiguous, inspect only enough project evidence to identify
-   the relevant technology or technologies.
-3. Select the minimal matching skill set from the table below.
-4. Read every selected `SKILL.md` before acting. Load its references only when
-   the selected skill says they are relevant.
-5. Apply each skill only to the files and concerns it owns.
+## Maintaining the Router
 
-| Evidence or request | Load |
-| --- | --- |
-| Python, `.py`, `pyproject.toml`, Python packaging, pytest, type hints | `../python-best-practices/SKILL.md` |
-| PowerShell, `.ps1`, `.psm1`, `.psd1`, Pester, PSScriptAnalyzer | `../powershell-best-practices/SKILL.md` |
-| Terraform, `.tf`, `.tfvars`, HCL, providers, modules, state, plans | `../terraform-best-practices/SKILL.md` |
-
-Do not infer a technology from vendored dependencies, virtual environments,
-generated output, build artifacts, or fixtures unless the request targets those
-files. In a monorepo, route by the requested file or subproject rather than the
-repository's dominant language.
-
-## Mixed-Technology Requests
-
-Load multiple skills only when the requested work crosses their ownership
-boundaries. Examples:
-
-- A Python tool that generates or validates Terraform: load Python for the
-  application code and Terraform for the generated HCL and infrastructure
-  contract.
-- A PowerShell deployment wrapper around Terraform: load PowerShell for the
-  wrapper and Terraform for commands, state safety, plan/apply behavior, and
-  module changes.
-- A repository-wide review containing all three technologies: load all three,
-  then report findings against the file type each skill owns.
-
-When multiple skills apply, follow stronger repository-local instructions and
-resolve overlap by artifact: the language skill owns its language and runtime;
-the Terraform skill owns Terraform configuration, state, and infrastructure
-operations.
-
-## Unsupported or Unclear Technologies
-
-If no included skill matches, do not fabricate one or force the request into the
-closest language. Follow the repository's local instructions and general
-engineering practices. State the catalog gap only when it helps the user.
-
-If two routes remain equally plausible and the choice would materially change
-the work, ask one focused question about the target file or technology.
-
-## Router Maintenance
-
-When a new specialized skill is added to this plugin, add one discriminating
-row to the routing table and update mixed-technology ownership only if the new
-skill creates a real overlap.
+When a specialized skill is added or removed, update the routing table in the
+same change. Update detection or composition guidance only when the catalog
+change creates a real new signal or ownership overlap. Never publish routes to
+skills that are not included in the plugin.

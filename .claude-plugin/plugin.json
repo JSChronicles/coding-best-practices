@@ -1,7 +1,7 @@
 {
   "name": "coding-best-practices",
-  "version": "0.2.0",
-  "description": "Reusable, provider-neutral best-practices skills for writing, reviewing, and maintaining code and infrastructure.",
+  "version": "0.5.0",
+  "description": "Reusable, provider-neutral best-practices skills for writing, reviewing, and maintaining code, infrastructure, and automation.",
   "author": {
     "name": "JSChronicles"
   },
@@ -9,9 +9,14 @@
   "license": "MIT",
   "keywords": [
     "coding-standards",
+    "agent-skills",
+    "go",
     "python",
     "powershell",
+    "pull-requests",
     "terraform",
+    "typescript",
+    "github-actions",
     "code-review"
   ]
 }
