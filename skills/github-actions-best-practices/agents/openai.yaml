@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Actions Best Practices"
+  short_description: "Build secure, maintainable GitHub workflows"
+  default_prompt: "Use $github-actions-best-practices to review and improve these GitHub Actions workflows."
