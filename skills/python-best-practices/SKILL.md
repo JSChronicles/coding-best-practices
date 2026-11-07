@@ -1,9 +1,9 @@
 ---
 name: python-best-practices
-description: Applies modern Python coding standards for maintainable .py files, CLIs, tests, and package structure. Use when user asks to "write Python", "review Python", "refactor this Python", "add type hints", "improve error handling", "add logging", "write tests", "build an argparse CLI", or improve concurrency, caching, dataclasses, or project layout.
+description: Applies modern Python coding standards for maintainable .py files, CLIs, tests, package structure, and Python CI workflows. Use when user asks to write, review, or refactor Python; add typing, logging, tests, or a CLI; improve concurrency or project layout; or create Python formatting, validation, build, and test automation.
 metadata:
   author: JSChronicles
-  version: "0.10"
+  version: "0.11"
 ---
 
 
@@ -52,6 +52,9 @@ Load only the reference files needed for the current task:
 - For exceptions and logging, read `references/errors-and-logging.md`.
 - For dataclasses, variable naming, and dictionary aliasing, read `references/data-modeling-and-naming.md`.
 - For concurrency and caching, read `references/concurrency-and-caching.md`.
+- For GitHub Actions that format, lint, type-check, build, or test Python, read
+  `references/github-actions-ci.md` and also apply
+  `github-actions-best-practices`.
 - For Python code reviews, read `references/review-checklist.md`.
 
 ## Review Behavior

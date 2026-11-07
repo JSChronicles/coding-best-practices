@@ -13,6 +13,9 @@ Before finishing Python changes, check:
 - Concurrency and caching are justified by clear benefit.
 - Variable names explain intent and avoid single-character names outside true mathematical contexts.
 - Short dictionary accesses were not replaced by meaningless aliases or pass-through variables.
+- Python GitHub Actions use the repository's declared interpreter, package
+  manager, lockfile, formatter, linter, type checker, tests, and build process;
+  action security and workflow mechanics follow `github-actions-best-practices`.
 
 ## Review Response Shape
 

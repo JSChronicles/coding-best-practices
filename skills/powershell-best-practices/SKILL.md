@@ -1,9 +1,9 @@
 ---
 name: powershell-best-practices
-description: Creates, edits, reviews, explains, and refactors PowerShell 7.6+ scripts, modules, advanced functions, classes, pipeline behavior, error handling, ShouldProcess support, dynamic parameters, and concurrency. Use when the user asks to write PowerShell, review PowerShell, improve a script, explain PowerShell behavior, build a module, or learn PowerShell best practices.
+description: Creates, reviews, and refactors PowerShell 7.6+ scripts, modules, functions, pipeline behavior, errors, ShouldProcess support, tests, and PowerShell CI workflows. Use for PowerShell code, module design, Pester, PSScriptAnalyzer, formatting, documentation validation, concurrency, or GitHub Actions that validate PowerShell.
 metadata:
   author: JSChronicles
-  version: "0.10"
+  version: "0.11"
 ---
 
 # PowerShell Best Practices
@@ -53,6 +53,9 @@ Read only the reference files needed for the current task:
 - [performance.md](references/performance.md): array-building performance, avoiding `+=` in loops, and collection choices.
 - [concurrency-and-caching.md](references/concurrency-and-caching.md): parallel execution, jobs, runspaces, throttling, cleanup, and caching.
 - [pester-testing.md](references/pester-testing.md): Pester test structure, module import patterns, assertions, mocking, and CI usage.
+- [github-actions-ci.md](references/github-actions-ci.md): GitHub Actions
+  patterns for formatting, PSScriptAnalyzer, Pester, documentation, runners,
+  and dependency versions; also apply `github-actions-best-practices`.
 - [project-quality.md](references/project-quality.md): module/script quality, dependencies, PSScriptAnalyzer expectations, and tests.
 - [review-checklist.md](references/review-checklist.md): PowerShell review priorities and response shape.
 

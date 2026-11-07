@@ -1,0 +1,81 @@
+# Template asset for powershell-best-practices.
+# Replace every __...__ placeholder before use. Resolve current action releases
+# with github-actions-best-practices, then use an Actions lockfile or full SHAs.
+name: PowerShell CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: powershell-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PESTER_VERSION: "__PESTER_VERSION__"
+  PSSCRIPTANALYZER_VERSION: "__PSSCRIPTANALYZER_VERSION__"
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@__CHECKOUT_REF__
+        with:
+          persist-credentials: false
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-PSResource -Name PSScriptAnalyzer -Version $env:PSSCRIPTANALYZER_VERSION -Scope CurrentUser -TrustRepository
+          Import-Module -Name PSScriptAnalyzer -RequiredVersion $env:PSSCRIPTANALYZER_VERSION -ErrorAction Stop
+
+      - name: Check formatting
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path . -Include '*.ps1', '*.psm1', '*.psd1' -File -Recurse |
+            Where-Object { $PSItem.FullName -notmatch '[\\/]\.git[\\/]' }
+          $failures = foreach ($file in $files) {
+            $source = Get-Content -LiteralPath $file.FullName -Raw
+            if ((Invoke-Formatter -ScriptDefinition $source) -ne $source) {
+              $file.FullName
+            }
+          }
+          if ($failures) {
+            throw "Formatting check failed for:$([Environment]::NewLine)$($failures -join [Environment]::NewLine)"
+          }
+
+      - name: Analyze PowerShell
+        shell: pwsh
+        run: |
+          $issues = @(Invoke-ScriptAnalyzer -Path . -Recurse)
+          $issues | Format-Table -AutoSize
+          if ($issues.Where({ $PSItem.Severity -eq 'Error' })) {
+            throw 'PSScriptAnalyzer reported errors.'
+          }
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@__CHECKOUT_REF__
+        with:
+          persist-credentials: false
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Install-PSResource -Name Pester -Version $env:PESTER_VERSION -Scope CurrentUser -TrustRepository
+          Import-Module -Name Pester -RequiredVersion $env:PESTER_VERSION -ErrorAction Stop
+
+      - name: Run Pester
+        shell: pwsh
+        run: Invoke-Pester -Path './tests' -CI

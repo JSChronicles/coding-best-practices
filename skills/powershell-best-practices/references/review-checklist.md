@@ -34,6 +34,9 @@ Prioritize:
 - `Start-Job` used where `Start-ThreadJob`, `ForEach-Object -Parallel`, or a normal loop would fit the PowerShell 7.6 baseline better.
 - Code likely to fail PSScriptAnalyzer.
 - Missing tests for changed behavior.
+- PowerShell GitHub Actions do not check formatting, PSScriptAnalyzer, Pester,
+  and generated documentation as required by the repository, or do not follow
+  `github-actions-best-practices` for workflow security and dependencies.
 
 If no issues are found, say so directly and mention any validation that was not run.
 
