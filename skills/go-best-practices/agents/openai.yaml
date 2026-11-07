@@ -1,0 +1,4 @@
+interface:
+  display_name: "Go Best Practices"
+  short_description: "Build idiomatic, reliable Go software"
+  default_prompt: "Use $go-best-practices to review and improve this Go code."

@@ -1,0 +1,59 @@
+# Template asset for go-best-practices.
+# Replace every __...__ placeholder before use. Resolve current action releases
+# with github-actions-best-practices, then use an Actions lockfile or full SHAs.
+name: Go CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: go-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@__CHECKOUT_REF__
+        with:
+          persist-credentials: false
+
+      - name: Install Go
+        uses: actions/setup-go@__SETUP_GO_REF__
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download and verify modules
+        run: |
+          go mod download
+          go mod verify
+
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Race test
+        run: go test -race ./...
+
+      - name: Build
+        run: go build ./...
+
+      - name: Check module tidiness
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
