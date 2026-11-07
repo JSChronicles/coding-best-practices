@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pull Request Description Writer"
+  short_description: "Draft clear, reviewer-focused PR descriptions"
+  default_prompt: "Use $pull-request-description-writer to summarize my local branch as a pull request description."
