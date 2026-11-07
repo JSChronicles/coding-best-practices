@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Skill Authoring Best Practices"
+  short_description: "Design deep, testable, reusable agent skills"
+  default_prompt: "Use $agent-skill-authoring-best-practices to design and validate a reusable agent skill for this workflow."
