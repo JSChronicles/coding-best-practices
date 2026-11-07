@@ -1,0 +1,56 @@
+# Template asset for typescript-best-practices.
+# Replace every __...__ placeholder before use. Resolve current action releases
+# with github-actions-best-practices, then use an Actions lockfile or full SHAs.
+name: TypeScript CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: typescript-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@__CHECKOUT_REF__
+        with:
+          persist-credentials: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@__SETUP_NODE_REF__
+        with:
+          node-version-file: "__NODE_VERSION_FILE__"
+          cache: "__PACKAGE_MANAGER__"
+          cache-dependency-path: "__LOCKFILE__"
+
+      - name: Prepare package manager
+        run: __PACKAGE_MANAGER_SETUP_COMMAND__
+
+      - name: Install locked dependencies
+        run: __FROZEN_INSTALL_COMMAND__
+
+      - name: Check formatting
+        run: __FORMAT_CHECK_COMMAND__
+
+      - name: Lint
+        run: __LINT_COMMAND__
+
+      - name: Type-check
+        run: __TYPECHECK_COMMAND__
+
+      - name: Test
+        run: __TEST_COMMAND__
+
+      - name: Build
+        run: __BUILD_COMMAND__

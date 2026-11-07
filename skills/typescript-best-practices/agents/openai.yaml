@@ -1,0 +1,4 @@
+interface:
+  display_name: "TypeScript Best Practices"
+  short_description: "Build safe, maintainable TypeScript software"
+  default_prompt: "Use $typescript-best-practices to review and improve this TypeScript code."
