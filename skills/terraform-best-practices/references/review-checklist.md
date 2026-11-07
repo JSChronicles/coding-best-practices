@@ -74,6 +74,22 @@ When reviewing Terraform, check the highest-risk items first.
 
 ## CI/CD And GitHub Actions
 
+- Are validation and deploy implemented as separate workflow files with no
+  pull-request apply path?
+- Does validation preserve the order: checkout, setup, planning identity when
+  needed, format, init, validate, tests, saved plan, upload, then reporting?
+- Does deployment preserve the order: trusted gate, non-canceling environment
+  concurrency, exact checkout, OIDC, successful plan-run lookup, artifact
+  download and verification, backend init, then apply, with any configured
+  environment approval gating the job?
+- Is the validation/plan workflow the only workflow that runs `terraform plan`?
+- Does deploy fail closed rather than creating or recomputing a plan when the
+  successful plan run or artifact is missing, failed, stale, or mismatched?
+- If a plan artifact crosses workflows, is it proven to match the exact commit,
+  toolchain, lockfiles, backend, workspace, account, region, and environment?
+- Does the workflow follow the language-specific checks in
+  [github-actions-ci.md](github-actions-ci.md) and the dependency, permission,
+  trigger, and trust rules in `github-actions-best-practices`?
 - Are pull request workflows limited to format, validation, lint, security scanning, and speculative plans?
 - Are apply workflows separated from pull request validation workflows?
 - Are GitHub Actions `permissions` minimal and job-scoped?

@@ -3,7 +3,7 @@ name: terraform-best-practices
 description: Creates, edits, reviews, explains, and refactors Terraform .tf and .tfvars code, modules, providers, state, CI checks, and project layouts. Use when user asks to "write Terraform", "review Terraform", "fix tf files", "add a module", "configure providers", "validate Terraform", or "plan infrastructure".
 metadata:
   author: JSChronicles
-  version: "0.10"
+  version: "0.13"
 ---
 
 # Terraform
@@ -30,6 +30,10 @@ Prefer Terraform that is boring, explicit, and easy to review. Do not over-engin
 - Configure providers in root modules. Child modules may declare provider requirements but should usually not configure providers.
 - Use remote state for shared, team-managed, or production infrastructure.
 - Never commit state files, `.terraform/`, secrets, or unprotected plan artifacts.
+- Keep pull-request validation and trusted deployment in separate workflows.
+  The validation/plan workflow is the only workflow allowed to create the saved
+  plan. Deploy must locate a successful plan run, download and verify that plan,
+  and apply it in order. Deploy must never create or recompute a plan.
 
 ## Workflow
 
@@ -49,6 +53,9 @@ Load only the reference files needed for the current task:
 - For project structure, root modules, child modules, nested modules, README expectations, and file splitting, read `references/layout.md`.
 - For variables, type constraints, locals, outputs, naming, providers, and defensive Terraform patterns, read `references/module-authoring.md`.
 - For Terraform and provider version constraints, lock files, upgrades, state, backends, secrets, and CI/CD, read `references/operations.md`.
+- For GitHub Actions that format, initialize, validate, lint, scan, document, or
+  plan Terraform, read `references/github-actions-ci.md` and also apply
+  `github-actions-best-practices`.
 - For Terraform code reviews, read `references/review-checklist.md`.
 
 ## Review Behavior

@@ -1,0 +1,123 @@
+# Template asset for terraform-best-practices.
+# This workflow only consumes a successful validation/plan artifact; it never
+# creates a replacement plan. Keep the established step order intact.
+# Replace every __...__ placeholder before use. Resolve current action releases
+# with github-actions-best-practices, then use an Actions lockfile or full SHAs.
+name: Terraform Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: terraform-deploy-${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: terraform
+
+jobs:
+  deploy:
+    if: github.ref_name == 'main' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: __ENVIRONMENT__
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      pull-requests: read
+    steps:
+      - name: Checkout exact deploy commit
+        uses: actions/checkout@__CHECKOUT_REF__
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@__SETUP_TERRAFORM_REF__
+        with:
+          terraform_version: "__TERRAFORM_VERSION__"
+
+      - name: Authenticate apply identity with OIDC
+        uses: __CLOUD_OIDC_ACTION__@__CLOUD_OIDC_ACTION_REF__
+        with:
+          __CLOUD_ROLE_INPUT__: ${{ vars.__APPLY_ROLE_VARIABLE__ }}
+          __CLOUD_REGION_INPUT__: ${{ vars.__REGION_VARIABLE__ }}
+
+      - name: Find successful validation plan
+        id: plan-run
+        uses: actions/github-script@__GITHUB_SCRIPT_REF__
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const associated = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner,
+              repo,
+              commit_sha: context.sha,
+            });
+            const mergedPullRequest = associated.data.find(
+              (pullRequest) => pullRequest.merged_at && pullRequest.base.ref === 'main',
+            );
+            if (!mergedPullRequest) {
+              core.setFailed(`No merged pull request is associated with ${context.sha}.`);
+              return;
+            }
+
+            const sourceSha = mergedPullRequest.head.sha;
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner,
+              repo,
+              workflow_id: '__PLAN_WORKFLOW_FILE__',
+              head_sha: sourceSha,
+              status: 'success',
+              per_page: 1,
+            });
+            const planRun = runs.data.workflow_runs[0];
+            if (!planRun) {
+              core.setFailed(`No successful validation plan exists for ${sourceSha}.`);
+              return;
+            }
+
+            core.setOutput('run-id', String(planRun.id));
+            core.setOutput('source-sha', sourceSha);
+            core.setOutput('artifact-name', 'tfplan');
+
+      - name: Download saved validation plan
+        uses: actions/download-artifact@__DOWNLOAD_ARTIFACT_REF__
+        with:
+          name: ${{ steps.plan-run.outputs.artifact-name }}
+          path: terraform
+          run-id: ${{ steps.plan-run.outputs.run-id }}
+          github-token: ${{ github.token }}
+
+      - name: Verify plan provenance
+        env:
+          EXPECTED_SOURCE_SHA: ${{ steps.plan-run.outputs.source-sha }}
+          EXPECTED_TERRAFORM_VERSION: "__TERRAFORM_VERSION__"
+          EXPECTED_TARGET_ENVIRONMENT: "__ENVIRONMENT__"
+        shell: bash
+        run: |
+          test -f tfplan
+          test -f plan-metadata.json
+          lock_sha256="$(sha256sum .terraform.lock.hcl | cut -d ' ' -f 1)"
+          jq -e \
+            --arg source_sha "$EXPECTED_SOURCE_SHA" \
+            --arg terraform_version "$EXPECTED_TERRAFORM_VERSION" \
+            --arg target_environment "$EXPECTED_TARGET_ENVIRONMENT" \
+            --arg lock_sha256 "$lock_sha256" \
+            '.source_sha == $source_sha and
+             .terraform_version == $terraform_version and
+             .target_environment == $target_environment and
+             .lock_sha256 == $lock_sha256' \
+            plan-metadata.json
+
+      - name: Initialize remote backend
+        run: terraform init -reconfigure -input=false -no-color -lockfile=readonly
+
+      - name: Apply saved validation plan
+        run: terraform apply -input=false tfplan

@@ -131,6 +131,24 @@ General standards:
 
 ## CI/CD Standards
 
+Use two separate workflow files for Terraform automation:
+
+- a validation workflow for pull requests and non-mutating quality gates;
+- a deploy workflow for trusted refs, protected environments, and apply.
+
+The validation/plan order is checkout, Terraform setup, planning
+authentication when needed, format, initialization, validation, tests, saved
+plan creation, plan artifact upload, and review summary. Lint and security
+workflows remain required checks in their established positions.
+The deploy order is trusted-ref gating, non-canceling environment concurrency,
+exact checkout, OIDC authentication, successful plan-run lookup, plan artifact
+download and verification, real backend initialization, then apply of that
+downloaded plan. A configured GitHub environment approval gates the deploy job.
+
+The deploy workflow must not run `terraform plan` or otherwise recompute the
+plan. If no successful plan workflow or valid plan artifact exists, deployment
+fails and the approved plan workflow must run again.
+
 For pull requests:
 
 - Run format checks.
@@ -153,6 +171,11 @@ For apply:
 - Do not cancel in-progress applies by default.
 
 Do not design workflows that apply unreviewed Terraform changes from pull requests.
+
+Do not apply a plan unless its source run and metadata satisfy the repository's
+required commit, toolchain, lockfile, backend, workspace, account, region, and
+environment checks. When a plan is invalid or cannot be proven, fail closed and
+rerun the plan workflow. Never generate the replacement inside deploy.
 
 ## GitHub Actions Standards
 
