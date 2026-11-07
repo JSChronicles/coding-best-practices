@@ -3,7 +3,7 @@ name: terraform-best-practices
 description: Creates, edits, reviews, explains, and refactors Terraform .tf and .tfvars code, modules, providers, state, CI checks, and project layouts. Use when user asks to "write Terraform", "review Terraform", "fix tf files", "add a module", "configure providers", "validate Terraform", or "plan infrastructure".
 metadata:
   author: JSChronicles
-  version: "0.13"
+  version: "0.14"
 ---
 
 # Terraform

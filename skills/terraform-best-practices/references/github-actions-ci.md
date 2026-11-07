@@ -44,7 +44,8 @@ this order, skipping only stages the repository does not use:
 7. Run `terraform test` when test files exist.
 8. Create the saved plan artifact consumed by deploy.
 9. Upload the plan only after successful plan creation, with short retention
-    and plan metadata that identifies the source commit and target.
+   and the stable artifact name `tfplan`. Do not create a separate metadata
+   artifact.
 10. Publish a bounded, sanitized plan summary for review.
 11. Fail the workflow if any required stage failed.
 
@@ -71,8 +72,7 @@ manual dispatch. Preserve this order:
 5. Authenticate with OIDC using the apply role.
 6. Find the successful validation/plan workflow run associated with the change.
 7. Fail if that successful run or its required plan artifact does not exist.
-8. Download the saved plan and verify its source change, workflow, toolchain,
-   lockfile, target environment, and artifact identity.
+8. Download the `tfplan` artifact from that successful validation run.
 9. Initialize the real remote backend with state locking enabled.
 10. Apply the downloaded saved plan exactly as produced. Do not run
     `terraform plan`, refresh the plan, or substitute a newly generated plan.
@@ -83,22 +83,13 @@ Branch protection should require the validation workflow before merge. The
 deploy workflow must not infer that an arbitrary successful run or similarly
 named artifact belongs to the change being deployed.
 
-## Plan Artifact Identity
+## Plan Artifact Promotion
 
-The Foundry template demonstrates locating a successful validation run and
-downloading its saved plan. Preserve that promotion concept only when the plan
-is safe to apply and identity checks prove all of the following:
-
-- the plan came from the successful validation run associated with the change;
-- the workflow and Terraform/provider lockfiles match;
-- the target backend, workspace, account, region, and environment match;
-- the plan came from a trusted workflow and was not replaceable by an untrusted
-  actor;
-- the artifact is protected, unexpired, and approved for deployment.
-
-If the saved plan is missing, failed, expired, or does not satisfy the required
-identity checks, deploy must stop. The plan workflow must be rerun through the
-approved process to produce a replacement; deploy must not generate one.
+The Foundry workflow locates the successful validation run associated with the
+pull request head SHA, then downloads that run's `tfplan` artifact by run ID.
+Do not create or require a separate plan metadata file. If the successful run or
+its `tfplan` artifact is missing, failed, or expired, deploy must stop and the
+validation workflow must be rerun. Deploy must not generate a replacement plan.
 
 ## Baseline Validation
 
@@ -142,11 +133,11 @@ the saved plan that deploy consumes. Backend access, provider credentials, cost,
 and untrusted-code risk must be understood. Prefer OIDC and a narrowly scoped
 planning identity. Never expose production credentials to untrusted fork code.
 
-Use `-input=false`, preserve state locking unless an isolated validation backend
-justifies otherwise, and ensure a failed plan fails the job. A saved plan can
-contain sensitive values; do not upload it by default. If another trusted job
-must consume it, use restricted artifacts, short retention, and an explicit
-trust boundary.
+Use `-input=false -lock=false` for the saved pull-request plan so validation does
+not take the Terraform state lock. Keep state locking enabled for apply. Ensure
+a failed plan fails the job. A saved plan can contain sensitive values; upload
+it only when the trusted deploy workflow consumes it, with short retention and
+an explicit trust boundary.
 
 If posting a plan summary to a pull request, sanitize and bound the output,
 avoid secrets, use the minimum `pull-requests: write` permission in that job,
@@ -169,7 +160,7 @@ workflow creation never implies permission to apply infrastructure.
 - Terraform and provider versions are explicit and compatible with lockfiles.
 - Formatting, initialization, and validation failures are fatal.
 - Elevated permissions exist only in jobs that need them.
-- Plans do not expose secrets or bypass appropriate state locking.
+- Validation plans use `-lock=false`, while apply keeps state locking enabled.
 - Documentation checks do not write to pull-request branches.
 - Apply behavior is isolated, approved, serialized, and outside untrusted CI.
 - Validation and deploy workflows preserve the required order, and any promoted

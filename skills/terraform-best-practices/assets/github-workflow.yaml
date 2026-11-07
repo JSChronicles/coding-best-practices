@@ -58,33 +58,12 @@ jobs:
         run: terraform test -no-color
 
       - name: Create saved deployment plan
-        run: terraform plan -input=false -no-color -out=tfplan
+        run: terraform plan -input=false -no-color -lock=false -out=tfplan
 
-      - name: Record plan provenance
-        env:
-          PLAN_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          PLAN_TERRAFORM_VERSION: "__TERRAFORM_VERSION__"
-          PLAN_TARGET_ENVIRONMENT: "__ENVIRONMENT__"
-        shell: bash
-        run: |
-          jq -n \
-            --arg source_sha "$PLAN_SOURCE_SHA" \
-            --arg terraform_version "$PLAN_TERRAFORM_VERSION" \
-            --arg target_environment "$PLAN_TARGET_ENVIRONMENT" \
-            --arg lock_sha256 "$(sha256sum .terraform.lock.hcl | cut -d ' ' -f 1)" \
-            '{
-              source_sha: $source_sha,
-              terraform_version: $terraform_version,
-              target_environment: $target_environment,
-              lock_sha256: $lock_sha256
-            }' > plan-metadata.json
-
-      - name: Upload saved plan and provenance
+      - name: Upload saved plan
         uses: actions/upload-artifact@__UPLOAD_ARTIFACT_REF__
         with:
           name: tfplan
-          path: |
-            terraform/tfplan
-            terraform/plan-metadata.json
+          path: terraform/tfplan
           if-no-files-found: error
           retention-days: 7

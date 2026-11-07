@@ -66,7 +66,9 @@ Common backend-related files:
 
 Keep backend configuration simple and explicit.
 
-Do not disable state locking for apply. Use `-lock=false` only for speculative plans when concurrent pull request plans are an intentional and documented tradeoff.
+Do not disable state locking for apply. The Foundry validation workflow uses
+`-lock=false` for its saved pull-request plan so validation does not take the
+state lock.
 
 ## Secrets And Sensitive Data
 
@@ -142,8 +144,8 @@ plan creation, plan artifact upload, and review summary. Lint and security
 workflows remain required checks in their established positions.
 The deploy order is trusted-ref gating, non-canceling environment concurrency,
 exact checkout, OIDC authentication, successful plan-run lookup, plan artifact
-download and verification, real backend initialization, then apply of that
-downloaded plan. A configured GitHub environment approval gates the deploy job.
+download, real backend initialization, then apply of that downloaded plan. A
+configured GitHub environment approval gates the deploy job.
 
 The deploy workflow must not run `terraform plan` or otherwise recompute the
 plan. If no successful plan workflow or valid plan artifact exists, deployment
@@ -172,10 +174,10 @@ For apply:
 
 Do not design workflows that apply unreviewed Terraform changes from pull requests.
 
-Do not apply a plan unless its source run and metadata satisfy the repository's
-required commit, toolchain, lockfile, backend, workspace, account, region, and
-environment checks. When a plan is invalid or cannot be proven, fail closed and
-rerun the plan workflow. Never generate the replacement inside deploy.
+Deploy must select the successful validation run associated with the pull
+request head SHA and download that run's `tfplan` artifact. Do not create or
+require a separate plan metadata file. When the run or artifact is unavailable,
+fail closed and rerun validation. Never generate the replacement inside deploy.
 
 ## GitHub Actions Standards
 
