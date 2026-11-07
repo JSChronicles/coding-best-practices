@@ -1,0 +1,48 @@
+name: Validate skills
+
+on:
+  pull_request:
+    paths:
+      - ".agents/plugins/marketplace.json"
+      - ".claude-plugin/**"
+      - ".github/workflows/validate-skills.yaml"
+      - "plugin.json"
+      - "scripts/validate_skills.py"
+      - "skills/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".agents/plugins/marketplace.json"
+      - ".claude-plugin/**"
+      - ".github/workflows/validate-skills.yaml"
+      - "plugin.json"
+      - "scripts/validate_skills.py"
+      - "skills/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-skills-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate skills and plugin metadata
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.14"
+
+      - name: Validate skills
+        run: uv run scripts/validate_skills.py

@@ -76,6 +76,25 @@ Agents that support the Agent Skills layout can install individual directories f
 
 Keep each skill focused and provider-neutral. Put detailed, conditional guidance in `references/`, link it from `SKILL.md`, and validate changed skills before publishing a new package version.
 
+Run the repository validator before opening a pull request:
+
+```console
+uv run scripts/validate_skills.py
+```
+
+The validator checks every skill's frontmatter, author and version metadata,
+local Markdown links, optional `agents/openai.yaml`, and synchronized plugin
+manifests. The same command runs in GitHub Actions for relevant pull requests
+and pushes to `main`.
+
+After changing a workflow or action dependency, regenerate and verify the
+workflow lockfile:
+
+```console
+gh actions-lock
+gh actions-lock --verify-local
+```
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [skills-badge]: https://img.shields.io/github/directory-file-count/JSChronicles/coding-best-practices/skills?type=dir&label=skills&color=brightgreen
