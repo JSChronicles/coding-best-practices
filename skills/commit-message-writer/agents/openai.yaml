@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit Message Writer"
+  short_description: "Draft clear, automation-aware commit messages"
+  default_prompt: "Use $commit-message-writer to draft a Conventional Commit message for my staged changes."
