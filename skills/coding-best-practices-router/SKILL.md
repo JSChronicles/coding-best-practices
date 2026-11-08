@@ -3,7 +3,7 @@ name: coding-best-practices-router
 description: Routes ambiguous, repository-wide, or mixed-technology coding requests to the smallest useful set of installed coding best-practices skills. Use when the target technology is unclear, work spans multiple supported technologies, or the user asks which catalog skill applies. Do not use when one specialized skill already clearly matches.
 metadata:
   author: JSChronicles
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Coding Best Practices Router

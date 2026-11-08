@@ -15,6 +15,7 @@ installed skill.
 | TypeScript types, runtime boundaries, modules, packages, async behavior, builds, and tests | `typescript-best-practices` |
 | Pull request titles, descriptions, reviewer summaries, risks, verification, migrations, and follow-ups | `pull-request-description-writer` |
 | Agent skill scope, activation, architecture, references, assets, scripts, validation, evaluation, portability, and maintenance | `agent-skill-authoring-best-practices` |
+| Atomic commit boundaries, Conventional Commit types and scopes, label semantics, titles, bodies, footers, and commit planning | `commit-message-writer` |
 
 Repository-local instructions and the user's requested outcome apply across all
 selected skills. Within that scope, let each specialized skill own its artifact
@@ -87,6 +88,19 @@ portability. Add a domain skill when the new skill encodes specialized technical
 practice that must be checked for correctness. Add GitHub Actions guidance only
 when the skill package includes workflow files; ordinary skill Markdown does not
 require it.
+
+### Commit Messages and Pull Request Descriptions
+
+Use `commit-message-writer` for one staged commit, a proposed atomic commit
+group, or review of a commit title and body. Use
+`pull-request-description-writer` for the combined branch-level summary and
+review context. A pull request description may synthesize several commits, but
+it should not be copied into each commit body.
+
+Add a language, Terraform, or GitHub Actions skill only when the change requires
+specialized interpretation to classify or summarize accurately. The domain
+skill supplies technical meaning; the commit skill owns atomicity, convention,
+repository label semantics, and message quality.
 
 ## Composition Rules
 

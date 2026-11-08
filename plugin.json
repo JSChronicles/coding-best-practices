@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "coding-best-practices",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Reusable, provider-neutral best-practices skills for writing, reviewing, and maintaining code, infrastructure, and automation.",
   "author": {
     "name": "JSChronicles"
@@ -11,6 +11,7 @@
   "keywords": [
     "coding-standards",
     "agent-skills",
+    "commit-messages",
     "go",
     "python",
     "powershell",

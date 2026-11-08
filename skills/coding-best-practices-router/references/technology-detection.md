@@ -89,3 +89,9 @@ A request to create, improve, review, validate, evaluate, or package a reusable
 agent skill routes to `agent-skill-authoring-best-practices`. Product-specific
 skill metadata or installation may require host guidance too, but the authoring
 skill owns the portable scope, instructions, resources, and quality model.
+
+A request to draft or review a commit title or body, choose a Conventional
+Commit type or scope, interpret commit-prefix label automation, summarize staged
+changes, or plan logical commits routes to `commit-message-writer` regardless of
+implementation language. Add a technology skill only when classification or
+summary accuracy depends on specialized behavior in the change.

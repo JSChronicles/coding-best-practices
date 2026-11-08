@@ -25,6 +25,7 @@ infrastructure, and automation.
 
 - `agent-skill-authoring-best-practices`
 - `coding-best-practices-router`
+- `commit-message-writer`
 - `go-best-practices`
 - `github-actions-best-practices`
 - `python-best-practices`
