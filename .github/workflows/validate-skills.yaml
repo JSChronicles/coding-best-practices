@@ -42,7 +42,9 @@ jobs:
       - name: Install uv and Python
         uses: astral-sh/setup-uv@v10.3.3
         with:
+          version: "0.13.7"
           python-version: "3.14"
+          enable-cache: false
 
       - name: Validate skills
         run: uv run scripts/validate_skills.py
