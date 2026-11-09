@@ -7,8 +7,9 @@ on:
       - ".claude-plugin/**"
       - ".github/workflows/validate-skills.yaml"
       - "plugin.json"
-      - "scripts/validate_skills.py"
+      - "scripts/**"
       - "skills/**"
+      - "tests/**"
   push:
     branches:
       - main
@@ -17,8 +18,9 @@ on:
       - ".claude-plugin/**"
       - ".github/workflows/validate-skills.yaml"
       - "plugin.json"
-      - "scripts/validate_skills.py"
+      - "scripts/**"
       - "skills/**"
+      - "tests/**"
   workflow_dispatch:
 
 permissions:
@@ -45,6 +47,9 @@ jobs:
           version: "0.13.7"
           python-version: "3.14"
           enable-cache: false
+
+      - name: Test skill validator
+        run: uv run --with PyYAML==6.0.3 python -B -m unittest discover --start-directory tests --verbose
 
       - name: Validate skills
         run: uv run scripts/validate_skills.py

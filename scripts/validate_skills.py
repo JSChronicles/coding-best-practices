@@ -18,11 +18,13 @@ import yaml
 
 ALLOWED_FRONTMATTER_KEYS = {
     "allowed-tools",
+    "compatibility",
     "description",
     "license",
     "metadata",
     "name",
 }
+MAX_COMPATIBILITY_LENGTH = 500
 SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION_PATTERN = re.compile(
     r"^\d+\.\d+(?:\.\d+)?(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$"
@@ -288,10 +290,39 @@ def _validate_skill(
     elif "<" in description or ">" in description:
         issues.append(f"{display_path}: description cannot contain angle brackets")
 
+    license_value = frontmatter.get("license")
+    if "license" in frontmatter and (
+        not isinstance(license_value, str) or not license_value.strip()
+    ):
+        issues.append(f"{display_path}: license must be a non-empty string")
+
+    compatibility = frontmatter.get("compatibility")
+    if "compatibility" in frontmatter:
+        if not isinstance(compatibility, str) or not compatibility.strip():
+            issues.append(
+                f"{display_path}: compatibility must be a non-empty string"
+            )
+        elif len(compatibility) > MAX_COMPATIBILITY_LENGTH:
+            issues.append(
+                f"{display_path}: compatibility exceeds "
+                f"{MAX_COMPATIBILITY_LENGTH} characters"
+            )
+
+    allowed_tools = frontmatter.get("allowed-tools")
+    if "allowed-tools" in frontmatter and (
+        not isinstance(allowed_tools, str) or not allowed_tools.strip()
+    ):
+        issues.append(f"{display_path}: allowed-tools must be a non-empty string")
+
     metadata = frontmatter.get("metadata")
     if not isinstance(metadata, dict):
         issues.append(f"{display_path}: metadata must be a mapping")
     else:
+        if any(not isinstance(key, str) for key in metadata):
+            issues.append(f"{display_path}: metadata keys must be strings")
+        if any(not isinstance(value, str) for value in metadata.values()):
+            issues.append(f"{display_path}: metadata values must be strings")
+
         author = metadata.get("author")
         if not isinstance(author, str) or not author.strip():
             issues.append(f"{display_path}: metadata.author is required")
@@ -302,6 +333,9 @@ def _validate_skill(
                 f"{display_path}: metadata.version must be a quoted version "
                 "such as 0.1 or 0.1.0"
             )
+
+    if not body.strip():
+        issues.append(f"{display_path}: Markdown instructions are required")
 
     if re.search(r"(?m)^[ ]{0,3}\[TODO:[^\n]*\][ \t]*$", _without_fenced_code(body)):
         issues.append(f"{display_path}: unfinished TODO placeholder")
