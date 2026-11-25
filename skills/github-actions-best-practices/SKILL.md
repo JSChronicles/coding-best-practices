@@ -1,9 +1,9 @@
 ---
 name: github-actions-best-practices
-description: Creates, reviews, refactors, and secures GitHub Actions workflows, reusable workflows, and custom or composite actions. Use for files under .github/workflows, action.yml or action.yaml, action versioning, workflow dependency lockfiles, SHA pinning, permissions, OIDC, Dependabot, caching, matrices, concurrency, artifacts, and CI/CD workflow design.
+description: Creates, reviews, refactors, and secures GitHub Actions workflows, reusable workflows, custom or composite actions, repository rulesets, repository hygiene settings, and release automation. Use for files under .github/workflows, action.yml or action.yaml, action versioning, workflow dependency lockfiles, SHA pinning, permissions, OIDC, Dependabot, caching, matrices, concurrency, artifacts, required checks, branch or tag protection, release bots, semantic versioning, immutable GitHub Releases, and CI/CD workflow design.
 metadata:
   author: JSChronicles
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # GitHub Actions Best Practices
@@ -72,6 +72,24 @@ achieves the requested outcome.
   secrets in either, and treat restored cache content as untrusted.
 - Add concurrency controls to deployments and replaceable runs, and add
   sensible timeouts to jobs or steps that could hang or consume costly runners.
+- For automated GitHub Releases, prefer a dedicated, narrowly installed GitHub
+  App, keep version sources and tags synchronized, and enable release
+  immutability when the repository and publishing process support it. Do not
+  grant the release bot repository administration merely to configure this
+  one-time setting.
+- For repositories developed through pull requests, default to an active
+  ruleset targeting `~DEFAULT_BRANCH` that blocks deletion and force pushes and
+  requires reviewed pull requests. Start with no bypass actors; add only a
+  named, dedicated App when direct automation genuinely requires bypass.
+- Require pull-request checks for every owned language and configuration
+  domain: non-mutating formatting verification, lint or static analysis, tests,
+  and schema validation when schemas or schema-governed documents exist. Apply
+  the matching language or infrastructure skill for the exact commands.
+- For active repositories developed through pull requests, enable automatic
+  deletion of merged head branches, automatic closing of issues linked to
+  merged pull requests, and persistent suggestions to update out-of-date pull
+  request branches unless a documented workflow or retention requirement
+  conflicts with one of those defaults.
 - Keep workflows focused. Use matrices for genuinely equivalent variants, not
   as a substitute for clear job boundaries or materially different procedures.
 
@@ -100,6 +118,16 @@ caches, artifacts, or concurrency behavior.
 Read [workflow-security.md](references/workflow-security.md) when a workflow
 handles pull requests, secrets, deployments, cloud access, elevated token
 permissions, self-hosted runners, or untrusted input.
+
+Read
+[release-automation-and-immutability.md](references/release-automation-and-immutability.md)
+when designing or reviewing version calculation, release tags, changelogs,
+release bots, GitHub Releases, attached assets, or release immutability.
+
+Read [repository-rulesets.md](references/repository-rulesets.md) when designing,
+exporting, importing, or reviewing branch, tag, or push rulesets, required
+checks, merge requirements, bypass actors, or related repository hygiene
+settings.
 
 For a review or final quality pass, use
 [review-checklist.md](references/review-checklist.md).
