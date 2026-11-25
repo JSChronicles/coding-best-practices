@@ -8,7 +8,7 @@
       "name": "coding-best-practices",
       "source": "./",
       "description": "Reusable best-practices skills for agent skill authoring, commit messages, Dockerfiles, Go, Python, PowerShell, Terraform, TypeScript, GitHub Actions, pull request descriptions, and an extensible technology catalog.",
-      "version": "0.6.0"
+      "version": "0.7.0"
     }
   ]
 }
