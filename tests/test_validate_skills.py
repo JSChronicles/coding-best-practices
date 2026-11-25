@@ -1,6 +1,7 @@
 """Regression tests for skill frontmatter validation."""
 
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -124,6 +125,58 @@ metadata:
         )
         self.assertTrue(
             any("Markdown instructions are required" in issue for issue in issues)
+        )
+
+
+class PluginManifestValidationTests(unittest.TestCase):
+    """Verify distributed plugin and release versions remain synchronized."""
+
+    def _validate(self, release_version: str) -> list[str]:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            repository_root = Path(temporary_directory)
+            description = "Test plugin description."
+            documents = {
+                "plugin.json": {
+                    "name": "test-plugin",
+                    "version": "1.2.3",
+                    "description": description,
+                },
+                ".claude-plugin/plugin.json": {
+                    "name": "test-plugin",
+                    "version": "1.2.3",
+                    "description": description,
+                },
+                ".claude-plugin/marketplace.json": {
+                    "plugins": [{"name": "test-plugin", "version": "1.2.3"}]
+                },
+                ".agents/plugins/marketplace.json": {
+                    "name": "test-plugin",
+                    "plugins": [{"name": "test-plugin"}],
+                },
+                ".release-please-manifest.json": {".": release_version},
+            }
+
+            for relative_path, document in documents.items():
+                path = repository_root / relative_path
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(
+                    f"{json.dumps(document, indent=2)}\n",
+                    encoding="utf-8",
+                )
+
+            return VALIDATOR._validate_plugin_manifests(repository_root)
+
+    def test_accepts_matching_release_manifest_version(self) -> None:
+        self.assertEqual([], self._validate("1.2.3"))
+
+    def test_rejects_mismatched_release_manifest_version(self) -> None:
+        issues = self._validate("1.2.4")
+
+        self.assertTrue(
+            any(
+                "plugin manifest versions are not synchronized" in issue
+                for issue in issues
+            )
         )
 
 
