@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dockerfile Best Practices"
+  short_description: "Build secure, reproducible OCI container images"
+  default_prompt: "Use $dockerfile-best-practices to review and improve this Dockerfile and its image build."

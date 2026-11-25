@@ -25,6 +25,7 @@ repository to confirm a route that is already explicit.
 | PowerShell | Targeted `*.ps1`, `*.psm1`, or `*.psd1` | Pester tests, PSScriptAnalyzer settings, PowerShell commands in CI or documentation |
 | Terraform | Targeted `*.tf` or `*.tfvars`; Terraform-specific blocks | `.terraform.lock.hcl`, `terraform` commands, provider/module/backend configuration |
 | GitHub Actions | Targeted files under `.github/workflows/`; `action.yml` or `action.yaml`; `.github/workflows/actions.lock` | `uses:`, `runs-on:`, `workflow_call`, GitHub contexts and expressions, a `github-actions` Dependabot entry |
+| Dockerfile | Targeted `Dockerfile`, `*.dockerfile`, or `.dockerignore` | Dockerfile instructions, `docker build` or `buildx` commands, OCI image metadata, a Docker Dependabot entry |
 | Go | Targeted `*.go`; `go.mod` defining a module | `go.sum`, `go.work`, `_test.go`, `go:generate`, `go test`, `go vet`, Go imports and package declarations |
 | TypeScript | Targeted `*.ts` or `*.tsx`; `tsconfig.json` or another targeted `tsconfig` | TypeScript compiler or test configuration, `typescript` in `package.json`, package-manager lockfiles, TypeScript imports and scripts |
 
@@ -45,6 +46,14 @@ repository to confirm a route that is already explicit.
   triggers, permissions, jobs, runners, expressions, dependencies, caching, or
   orchestration. Also route to a language skill only when the requested work
   changes substantive embedded code or a referenced script owned by that skill.
+- **Container workflows:** route to GitHub Actions for workflow mechanics and to
+  Dockerfile for image stages, build context, platform selection, image cache
+  semantics, smoke tests, attestations, or publication by digest. A workflow
+  that merely runs a job inside an existing container does not require the
+  Dockerfile skill unless the request changes that image contract.
+- **Compose and orchestration:** a Compose file, Kubernetes manifest, or runtime
+  command alone does not route to Dockerfile. Add the Dockerfile skill only when
+  the request also changes or reviews how an image is built or validated.
 - **Language CI workflows:** when creating or reviewing formatting, linting,
   validation, build, test, coverage, or security jobs for an installed language
   or Terraform, route to both GitHub Actions and that technology skill even if

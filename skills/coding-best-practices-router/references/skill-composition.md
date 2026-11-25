@@ -11,6 +11,7 @@ installed skill.
 | PowerShell syntax, streams, functions, modules, remoting, and Pester tests | `powershell-best-practices` |
 | Terraform configuration, providers, modules, state, plans, backends, and apply safety | `terraform-best-practices` |
 | GitHub Actions triggers, jobs, permissions, dependencies, runners, expressions, and CI/CD workflow security | `github-actions-best-practices` |
+| Dockerfile instructions, build stages and context, image contents, runtime contract, platforms, and image validation | `dockerfile-best-practices` |
 | Go packages, modules, APIs, errors, ownership, context, concurrency, and tests | `go-best-practices` |
 | TypeScript types, runtime boundaries, modules, packages, async behavior, builds, and tests | `typescript-best-practices` |
 | Pull request titles, descriptions, reviewer summaries, risks, verification, migrations, and follow-ups | `pull-request-description-writer` |
@@ -61,10 +62,24 @@ artifacts, and timeouts. The Go, Python, PowerShell, Terraform, or TypeScript
 skill owns the toolchain version, formatting, analysis, build, test, coverage,
 and deployment safety semantics for that technology.
 
+For container-image CI, GitHub Actions owns triggers, permissions, action
+resolution, lockfiles or SHA pins, registry authentication, concurrency,
+artifacts, and workflow orchestration. Dockerfile owns stage design, build
+inputs, BuildKit cache semantics, target platforms, image metadata, runtime
+smoke tests, SBOM and provenance expectations, and digest-based promotion.
+
 For TypeScript CI, GitHub Actions owns workflow mechanics, action currency and
 locking, permissions, caching, and orchestration. TypeScript owns the Node.js
 support contract, selected package manager and lockfile commands, formatting,
 linting, type checking, tests, builds, and package-consumer behavior.
+
+### Dockerfile and Application Languages
+
+Use Dockerfile guidance for the image build and runtime boundary. Add the Go,
+Python, PowerShell, or TypeScript skill when the task also changes substantive
+application code, package installation semantics, or language-specific build
+and test commands. A Dockerfile that merely copies an already defined package
+does not require every language skill represented in the image.
 
 ### Repository-Wide Work
 
