@@ -89,30 +89,7 @@ local Markdown links, optional `agents/openai.yaml`, and synchronized plugin
 manifests. The same command runs in GitHub Actions for relevant pull requests
 and pushes to `main`.
 
-After changing a workflow or action dependency, regenerate and verify the
-workflow lockfile:
 
-```console
-gh actions-lock
-gh actions-lock --verify-local
-```
-
-## Releases
-
-Merges to `main` are released directly by Python Semantic Release using
-Conventional Commits. When a release is required, the workflow updates
-`CHANGELOG.md`, synchronizes the plugin manifests, commits the version bump to
-`main`, creates the matching `vX.Y.Z` tag, and publishes a GitHub Release.
-
-Install the contents-only Python Release Bot GitHub App on this repository and
-configure the `PYTHON_RELEASE_BOT_CLIENT_ID` and
-`PYTHON_RELEASE_BOT_PRIVATE_KEY` repository secrets. Release history is
-anchored by baseline tag `v0.6.0` on commit `723bf6c`, which published plugin
-version 0.6.0.
-
-Use `fix:` for patch releases, `feat:` for minor releases, and a breaking-change
-marker such as `feat!:` for major releases. Skill versions remain independent
-from the distributed plugin version.
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
