@@ -129,9 +129,9 @@ metadata:
 
 
 class PluginManifestValidationTests(unittest.TestCase):
-    """Verify distributed plugin and release versions remain synchronized."""
+    """Verify distributed plugin versions remain synchronized."""
 
-    def _validate(self, release_version: str) -> list[str]:
+    def _validate(self, marketplace_version: str) -> list[str]:
         with tempfile.TemporaryDirectory() as temporary_directory:
             repository_root = Path(temporary_directory)
             description = "Test plugin description."
@@ -147,13 +147,17 @@ class PluginManifestValidationTests(unittest.TestCase):
                     "description": description,
                 },
                 ".claude-plugin/marketplace.json": {
-                    "plugins": [{"name": "test-plugin", "version": "1.2.3"}]
+                    "plugins": [
+                        {
+                            "name": "test-plugin",
+                            "version": marketplace_version,
+                        }
+                    ]
                 },
                 ".agents/plugins/marketplace.json": {
                     "name": "test-plugin",
                     "plugins": [{"name": "test-plugin"}],
                 },
-                ".release-please-manifest.json": {".": release_version},
             }
 
             for relative_path, document in documents.items():
@@ -166,10 +170,10 @@ class PluginManifestValidationTests(unittest.TestCase):
 
             return VALIDATOR._validate_plugin_manifests(repository_root)
 
-    def test_accepts_matching_release_manifest_version(self) -> None:
+    def test_accepts_matching_plugin_versions(self) -> None:
         self.assertEqual([], self._validate("1.2.3"))
 
-    def test_rejects_mismatched_release_manifest_version(self) -> None:
+    def test_rejects_mismatched_plugin_versions(self) -> None:
         issues = self._validate("1.2.4")
 
         self.assertTrue(
