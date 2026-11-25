@@ -386,6 +386,7 @@ def _validate_plugin_manifests(repository_root: Path) -> list[str]:
         "agents_marketplace": (
             repository_root / ".agents" / "plugins" / "marketplace.json"
         ),
+        "release_manifest": repository_root / ".release-please-manifest.json",
     }
     documents: dict[str, dict[str, object]] = {}
     issues: list[str] = []
@@ -405,6 +406,7 @@ def _validate_plugin_manifests(repository_root: Path) -> list[str]:
         "claude",
         "claude_marketplace",
         "agents_marketplace",
+        "release_manifest",
     }
     if set(documents) != required_documents:
         return issues
@@ -468,6 +470,7 @@ def _validate_plugin_manifests(repository_root: Path) -> list[str]:
         "plugin.json": documents["plugin"].get("version"),
         ".claude-plugin/plugin.json": documents["claude"].get("version"),
         ".claude-plugin/marketplace.json": marketplace_entry.get("version"),
+        ".release-please-manifest.json": documents["release_manifest"].get("."),
     }
     if any(
         not isinstance(version, str) or not VERSION_PATTERN.fullmatch(version)

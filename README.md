@@ -26,6 +26,7 @@ infrastructure, and automation.
 - `agent-skill-authoring-best-practices`
 - `coding-best-practices-router`
 - `commit-message-writer`
+- `dockerfile-best-practices`
 - `go-best-practices`
 - `github-actions-best-practices`
 - `python-best-practices`
@@ -95,6 +96,23 @@ workflow lockfile:
 gh actions-lock
 gh actions-lock --verify-local
 ```
+
+## Releases
+
+Release Please maintains a release pull request from Conventional Commits on
+`main`. Merging that pull request updates `CHANGELOG.md`, synchronizes the
+plugin manifests, creates the matching `vX.Y.Z` tag, and publishes a GitHub
+Release.
+
+Install the Python Release Bot GitHub App on this repository and configure the
+`PYTHON_RELEASE_BOT_CLIENT_ID` and `PYTHON_RELEASE_BOT_PRIVATE_KEY` repository
+secrets. The workflow exchanges those credentials for a short-lived token with
+write access to contents, issues, and pull requests so release pull requests
+trigger the normal validation workflow.
+
+Use `fix:` for patch releases, `feat:` for minor releases, and a breaking-change
+marker such as `feat!:` for major releases. Skill versions remain independent
+from the distributed plugin version.
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

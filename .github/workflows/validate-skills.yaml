@@ -5,8 +5,10 @@ on:
     paths:
       - ".agents/plugins/marketplace.json"
       - ".claude-plugin/**"
-      - ".github/workflows/validate-skills.yaml"
+      - ".github/workflows/**"
+      - ".release-please-manifest.json"
       - "plugin.json"
+      - "release-please-config.json"
       - "scripts/**"
       - "skills/**"
       - "tests/**"
@@ -16,8 +18,10 @@ on:
     paths:
       - ".agents/plugins/marketplace.json"
       - ".claude-plugin/**"
-      - ".github/workflows/validate-skills.yaml"
+      - ".github/workflows/**"
+      - ".release-please-manifest.json"
       - "plugin.json"
+      - "release-please-config.json"
       - "scripts/**"
       - "skills/**"
       - "tests/**"
